@@ -1,0 +1,17 @@
+*.pyc
+*.egg*
+local.py
+*.db
+dist/
+_build/
+build/
+.tox/
+/reports/
+*/static/CACHE/
+*.swp
+*.DS_Store
+htmlcov/
+.coverage
+node_modules
+.project
+.venv/*
