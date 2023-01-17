@@ -26,7 +26,22 @@ def getuser():
     return getattr(_thread_local,'user',None)
 
 
-class RequestUser(object):
+class RequestUser:
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # One-time configuration and initialization.
+
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
+
+        response = self.get_response(request)
+
+        # Code to be executed for each request/response after
+        # the view is called.
+
+        return response
 
     def process_request(self,request):
         django_user = getattr(request,'user',None)
@@ -78,7 +93,7 @@ class RequestUser(object):
                                 'weight':app_weight.get(app_label,99)
                             }
 
-            app_list = list(six.itervalues(app_dict))
+            app_list = list(app_dict.values())
             app_list.sort(key=lambda x: x['weight'])
 
             for app in app_list:
@@ -157,7 +172,7 @@ class RequestUser(object):
             # Sort the models alphabetically within each app.
             app_dict['models'].sort(key=lambda x: x['weight'])
 
-            app_lib = list(six.itervalues(lib_dict))
+            app_lib = list(lib_dict.values())
             app_lib.sort(key=lambda x: x['weight'])
 
             context = dict(
