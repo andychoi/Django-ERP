@@ -1,6 +1,6 @@
-from django.conf.urls import include, url,static
+from django.urls import re_path, include
 import basedata.views
 
 urlpatterns = [
-    url(r"dataimport/(?P<object_id>\d+)/action", basedata.views.action_import),
+    re_path(r"dataimport/(?P<object_id>\d+)/action", basedata.views.action_import),
 ]

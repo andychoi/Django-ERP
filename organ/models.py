@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.db import models
 from django.db import connection
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from common import const
 from common import generic
 
@@ -52,8 +52,8 @@ class OrgUnit(generic.BO):
         (5,_('COMMITTEE'))
     )
     index_weight = 2
-    parent = models.ForeignKey('self',verbose_name=_("parent"),null=True,blank=True)
-    organization = models.ForeignKey(Organization,verbose_name = _('organization'),null=True,blank=True)
+    parent = models.ForeignKey('self',verbose_name=_("parent"),null=True,blank=True, on_delete=models.DO_NOTHING)
+    organization = models.ForeignKey(Organization,verbose_name = _('organization'),null=True,blank=True, on_delete=models.DO_NOTHING)
     code = models.CharField(_("code"),max_length=const.DB_CHAR_CODE_8,blank=True,null=True)
     name = models.CharField(_("name"),max_length=const.DB_CHAR_NAME_120)
     short = models.CharField(_("short name"),max_length=const.DB_CHAR_NAME_20,blank=True,null=True)
@@ -91,9 +91,9 @@ class Position(generic.BO):
         ('05', _("EXPERT")),
     )
     index_weight = 3
-    unit = models.ForeignKey(OrgUnit,verbose_name=_('org unit'))
-    organization = models.ForeignKey(Organization,verbose_name=_('organization'),null=True,blank=True)
-    parent = models.ForeignKey('self',verbose_name=_("parent"),null=True,blank=True)
+    unit = models.ForeignKey(OrgUnit,verbose_name=_('org unit'), on_delete=models.DO_NOTHING)
+    organization = models.ForeignKey(Organization,verbose_name=_('organization'),null=True,blank=True, on_delete=models.DO_NOTHING)
+    parent = models.ForeignKey('self',verbose_name=_("parent"),null=True,blank=True, on_delete=models.DO_NOTHING)
     code = models.CharField(_("position code"),max_length=const.DB_CHAR_CODE_8,blank=True,null=True)
     name = models.CharField(_("position name"),max_length=const.DB_CHAR_NAME_120)
     short = models.CharField(_("short name"),max_length=const.DB_CHAR_NAME_20,blank=True,null=True)

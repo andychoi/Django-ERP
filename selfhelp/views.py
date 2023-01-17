@@ -3,10 +3,10 @@ from django.contrib.admin import site
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 from django.http.response import HttpResponseRedirect
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.response import TemplateResponse
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -15,7 +15,7 @@ def pay_action(request,model,object_id):
     ct = ContentType.objects.get(app_label='selfhelp',model=model)
     obj = ct.get_object_for_this_type(id=int(object_id))
     opts = obj._meta
-    objects_name = force_text(opts.verbose_name)
+    objects_name = force_str(opts.verbose_name)
 
     if model == 'reimbursement':
         loan = obj.loan
@@ -28,7 +28,7 @@ def pay_action(request,model,object_id):
         try:
             obj.action_pay(request)
             messages.success(request,_('action successfully'))
-        except Exception,e:
+        except Exception as e:
             messages.error(request,e)
 
         return HttpResponseRedirect("/admin/selfhelp/%s/%s"%(model,object_id))

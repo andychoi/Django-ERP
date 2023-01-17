@@ -1,6 +1,6 @@
 # coding = utf-8
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from common import generic
 from common import const
 from hr.models import Entry,SalaryItem,EmployeeSalaryItem

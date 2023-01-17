@@ -1,11 +1,11 @@
 # coding=utf-8
 from django.contrib.admin import site
 from django.http.response import HttpResponseRedirect
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.response import TemplateResponse
 from django.contrib import messages
 from basedata.models import DataImport
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def action_import(request,object_id):
@@ -18,14 +18,14 @@ def action_import(request,object_id):
     title = _("Are you sure?")
     obj = DataImport.objects.get(id=int(object_id))
     opts = obj._meta
-    objects_name = force_text(opts.verbose_name)
+    objects_name = force_str(opts.verbose_name)
 
     if request.POST.get("post"):
         obj.action_import(request)
         try:
 
             messages.success(request,_('data import successfully'))
-        except Exception,e:
+        except Exception as e:
             messages.error(request,e)
 
         return HttpResponseRedirect("/admin/basedata/dataimport/%s"%(object_id))

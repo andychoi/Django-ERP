@@ -3,10 +3,11 @@ from django.contrib import admin
 from django.forms import models
 from django.forms import fields,TextInput,Textarea
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.admin import GenericTabularInline
 from common import generic
-from basedata.models import ValueList,ValueListItem,Address,Partner,BankAccount,Project,Measure,Material,Brand,\
+from basedata.models import ValueList,ValueListItem, \
+    Address,Partner,BankAccount,Project,Measure,Material,Brand,\
     Category,Warehouse,TechnicalParameterName,TechnicalParameterValue,Trade,ExpenseAccount,Employee,Family,Education,\
     WorkExperience,ExtraParam,DataImport,Document
 
@@ -22,6 +23,7 @@ class ValueListItemInline(admin.TabularInline):
             return 3
 
 
+@admin.register(ValueList)
 class ValueListAdmin(generic.BOAdmin):
     CODE_NUMBER_WIDTH = 3
     CODE_PREFIX = 'S'
@@ -68,6 +70,7 @@ class PartnerForm(models.ModelForm):
         fields = '__all__'
 
 
+@admin.register(Partner)
 class PartnerAdmin(generic.BOAdmin):
     list_display = ['code','name','partner_type','level']
     list_display_links = ['code','name']
@@ -97,6 +100,7 @@ class ProjectForm(models.ModelForm):
         fields = '__all__'
 
 
+@admin.register(Project)
 class ProjectAdmin(generic.BOAdmin):
     CODE_PREFIX = 'PJ'
     list_display = ['code','name','status','income','expand']
@@ -114,6 +118,7 @@ class ProjectAdmin(generic.BOAdmin):
     form = ProjectForm
 
 
+@admin.register(Warehouse)
 class WarehouseAdmin(admin.ModelAdmin):
     list_display = ['code','name','location']
     filter_horizontal = ['users']
@@ -125,18 +130,21 @@ class WarehouseAdmin(admin.ModelAdmin):
             if not code:
                 obj.code = '%s%02d' % ('A',obj.id)
                 obj.save()
-        except Exception,e:
+        except Exception as e:
             self.message_user(request,'ERROR:%s' % e,level=messages.ERROR)
 
 
+@admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     list_display = ['name','pinyin']
 
 
+@admin.register(Measure)
 class MeasureAdmin(admin.ModelAdmin):
     list_display = ['code','name','status']
 
 
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['code','name','path']
 
@@ -153,7 +161,7 @@ class CategoryAdmin(admin.ModelAdmin):
                 else:
                     obj.path = obj.parent.name
                 obj.save()
-        except Exception,e:
+        except Exception as e:
             self.message_user(request,'ERROR:%s' % e,level=messages.ERROR)
 
 
@@ -177,6 +185,7 @@ class ExtraParamInline(admin.TabularInline):
             return 1
 
 
+@admin.register(Material)
 class MaterialAdmin(generic.BOAdmin):
     CODE_PREFIX = 'IT'
     CODE_NUMBER_WIDTH = 5
@@ -198,15 +207,18 @@ class TechParamValueInline(admin.TabularInline):
     model = TechnicalParameterValue
 
 
+@admin.register(TechnicalParameterName)
 class TechParamNameAdmin(admin.ModelAdmin):
     list_display = ['name','category']
     inlines = [TechParamValueInline]
 
 
+@admin.register(Trade)
 class TradeAdmin(admin.ModelAdmin):
     list_display = ['code','name','parent']
 
 
+@admin.register(ExpenseAccount)
 class ExpenseAdmin(generic.BOAdmin):
     CODE_PREFIX = 'FC'
     list_display = ['code','name','category']
@@ -243,6 +255,7 @@ class WorkExperienceInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Employee)
 class EmployeeAdmin(generic.BOAdmin):
     CODE_PREFIX = '1'
     list_display = ['code','name','position','gender','idcard','age','work_age','literacy','phone','email']
@@ -271,6 +284,7 @@ class EmployeeAdmin(generic.BOAdmin):
             return ['status','ygxs','rank','category','position','user']
 
 
+@admin.register(DataImport)
 class DataImportAdmin(generic.BOAdmin):
     list_display = ['imp_date','title','status']
     list_display_links = ['imp_date','title']
@@ -296,6 +310,7 @@ class DocumentForm(models.ModelForm):
         fields = '__all__'
 
 
+@admin.register(Document)
 class DocumentAdmin(generic.BOAdmin):
     CODE_PREFIX = 'FD'
     CODE_NUMBER_WIDTH = 4
@@ -315,25 +330,13 @@ class DocumentAdmin(generic.BOAdmin):
         else:
             return ['status']
 
+    @admin.action(
+        description=_('publish selected %(verbose_name_plural)s')
+    )
     def publish(self,request,queryset):
         import datetime
         cnt = queryset.filter(status='0').update(status='1',pub_date=datetime.datetime.now())
         self.message_user(request,u'%s 个文档发布成功'%cnt)
 
-    publish.short_description = _('publish selected %(verbose_name_plural)s')
 
 # admin.site.register(Address,AddressAdmin)
-admin.site.register(ValueList,ValueListAdmin)
-admin.site.register(Partner,PartnerAdmin)
-admin.site.register(Project,ProjectAdmin)
-admin.site.register(Material,MaterialAdmin)
-admin.site.register(Warehouse,WarehouseAdmin)
-admin.site.register(Brand,BrandAdmin)
-admin.site.register(Measure,MeasureAdmin)
-admin.site.register(Category,CategoryAdmin)
-admin.site.register(TechnicalParameterName,TechParamNameAdmin)
-admin.site.register(Trade,TradeAdmin)
-admin.site.register(ExpenseAccount,ExpenseAdmin)
-admin.site.register(Employee,EmployeeAdmin)
-admin.site.register(DataImport,DataImportAdmin)
-admin.site.register(Document,DocumentAdmin)

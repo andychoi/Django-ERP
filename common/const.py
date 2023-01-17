@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.db import connection
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 __author__ = 'zhugl'
 
 DB_CHAR_CODE_2 = 2
@@ -33,7 +33,7 @@ def get_value_list(group):
             cursor.execute('SELECT code,name FROM basedata_valuelistitem WHERE group_code=%s AND status=1',[group])
             rows = cursor.fetchall()
             return tuple([(code,name) for code,name in rows])
-        except Exception,e:
+        except Exception  as e:
             return None
     else:
         return None

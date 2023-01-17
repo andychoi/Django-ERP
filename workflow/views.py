@@ -3,11 +3,11 @@ from django.contrib.admin import site
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 from django.http.response import HttpResponseRedirect
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from workflow.models import Modal,Instance,TodoList,History,Node
 from plugin.wfnodes import NextNodeManager,NextNodeHandler
 from plugin.wfusers import NextUserManager,NextUserHandler
@@ -88,7 +88,7 @@ def start(request,app,model,object_id):
     obj = content_type.get_object_for_this_type(id=int(object_id))
     title = _("Are you sure?")
     opts = obj._meta
-    objects_name = force_text(opts.verbose_name)
+    objects_name = force_str(opts.verbose_name)
     has_workflow = False
     queryset = Modal.objects.filter(content_type=content_type,end__gt=datetime.date.today()).order_by('-end')
     cnt = queryset.count()
@@ -133,7 +133,7 @@ def start(request,app,model,object_id):
             try:
                 setattr(obj,next_node.status_field,next_node.status_value)
                 obj.save()
-            except Exception,e:
+            except Exception as e:
                 pass
         messages.success(request,_('workflow started successfully'))
         return HttpResponseRedirect("/admin/%s/%s/%s"%(app,model,object_id))
@@ -173,7 +173,7 @@ def approve(request,app,model,object_id,operation):
     obj = content_type.get_object_for_this_type(id=int(object_id))
     title = _("Are you sure?")
     opts = obj._meta
-    objects_name = force_text(opts.verbose_name)
+    objects_name = force_str(opts.verbose_name)
 
     has_workflow = False
     queryset = Modal.objects.filter(content_type=content_type,end__gt=datetime.date.today()).order_by('-end')
@@ -253,12 +253,12 @@ def approve(request,app,model,object_id,operation):
                             try:
                                 setattr(obj,current_tmp.status_field,current_tmp.status_value)
                                 obj.save()
-                            except Exception,e:
+                            except Exception as e:
                                 pass
                     History.objects.create(inst=workflow_instance,user=request.user,pro_type=int(operation),memo=memo,node=current_tmp)
                     TodoList.objects.filter(inst=workflow_instance,node=current_tmp,status=0).update(status=1)
                 messages.success(request,_('workflow approved successfully'))
-            except Exception,e:
+            except Exception as e:
                 messages.error(request,e)
                 pass
             if current_tmp.action and len(current_tmp.action) > 0:
@@ -309,6 +309,6 @@ def restart(request,app,model,object_id,instance):
             messages.success(request,_("workflow restarted success"))
         else:
             messages.warning(request,_("you do not have the permission to restart,only the starter can restart"))
-    except Exception,e:
+    except Exception as e:
         messages.error(request,e)
     return HttpResponseRedirect("/admin/%s/%s/%s"%(app,model,object_id))

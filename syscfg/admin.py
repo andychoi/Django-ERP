@@ -14,6 +14,7 @@ class SiteForm(ModelForm):
         fields = '__all__'
 
 
+@admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_display = ['name', 'begin', 'end']
@@ -22,6 +23,7 @@ class SiteAdmin(admin.ModelAdmin):
     form = SiteForm
 
 
+@admin.register(Module)
 class ModuleAdmin(generic.BOAdmin):
     CODE_NUMBER_WIDTH = 3
     CODE_PREFIX = 'U'
@@ -30,6 +32,7 @@ class ModuleAdmin(generic.BOAdmin):
     raw_id_fields = ['parent']
 
 
+@admin.register(Menu)
 class MenuAdmin(generic.BOAdmin):
     CODE_NUMBER_WIDTH = 3
     CODE_PREFIX = 'M'
@@ -40,6 +43,7 @@ class MenuAdmin(generic.BOAdmin):
     raw_id_fields = ['module']
 
 
+@admin.register(Role)
 class RoleAdmin(generic.BOAdmin):
     CODE_NUMBER_WIDTH = 3
     CODE_PREFIX = 'R'
@@ -47,7 +51,3 @@ class RoleAdmin(generic.BOAdmin):
     filter_horizontal = ['users','menus']
 
 
-admin.site.register(Site, SiteAdmin)
-admin.site.register(Module,ModuleAdmin)
-admin.site.register(Menu,MenuAdmin)
-admin.site.register(Role,RoleAdmin)

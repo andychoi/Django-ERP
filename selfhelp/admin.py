@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.db.models.aggregates import Sum
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from common import generic
 from common import const
 from basedata.models import Material,ExtraParam,Employee,Position
@@ -108,7 +108,7 @@ class LoanAdmin(generic.BOAdmin):
                 if obj and obj.status == 'P':
                     extra_context = extra_context or {}
                     extra_context.update(dict(readonly=True))
-            except Exception,e:
+            except Exception as e:
                 pass
         return super(LoanAdmin,self).changeform_view(request,object_id,form_url,extra_context)
 
@@ -182,7 +182,7 @@ class ReimbursementAdmin(generic.BOAdmin):
                 if obj and obj.status == 'P':
                     extra_context = extra_context or {}
                     extra_context.update(dict(readonly=True))
-            except Exception,e:
+            except Exception as e:
                 pass
         return super(ReimbursementAdmin,self).changeform_view(request,object_id,form_url,extra_context)
 

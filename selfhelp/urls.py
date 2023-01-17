@@ -1,6 +1,6 @@
-from django.conf.urls import include, url,static
+from django.urls import re_path, include
 import selfhelp.views
 
 urlpatterns = [
-    url(r"(?P<model>\w+)/(?P<object_id>\d+)/pay", selfhelp.views.pay_action),
+    re_path(r"(?P<model>\w+)/(?P<object_id>\d+)/pay", selfhelp.views.pay_action),
 ]
